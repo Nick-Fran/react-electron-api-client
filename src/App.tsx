@@ -1,9 +1,10 @@
 import React from "react";
 import { Box, Button, TextField } from "@mui/material"
 import { useQuery } from "@tanstack/react-query";
-import { fetchApi } from "./api/api";
+import { fetchApi } from "./hooks/useRequest/httpRequest";
 import { MethodSelect } from "./components";
 import { HttpMethod } from "./types/http";
+import { useRequest } from "./hooks";
 
 const App = () => {
   const [url, setUrl] = React.useState("");
@@ -14,15 +15,14 @@ const App = () => {
     isLoading,
     isError,
     error,
-    refetch
-  } = useQuery({
-    queryKey: ['users'],
-    queryFn: fetchApi.bind(null, url),
-    enabled: false
+    execute
+  } = useRequest({
+    method,
+    url
   });
 
   const handleSendRequest = () => {
-    refetch();
+    execute();
   }
 
   React.useEffect(() => {
