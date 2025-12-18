@@ -2,9 +2,12 @@ import React from "react";
 import { Box, Button, TextField } from "@mui/material"
 import { useQuery } from "@tanstack/react-query";
 import { fetchApi } from "./api/api";
+import { MethodSelect } from "./components";
+import { HttpMethod } from "./types/http";
 
 const App = () => {
   const [url, setUrl] = React.useState("");
+  const [method, setMethod] = React.useState<HttpMethod>('GET');
 
   const {
     data,
@@ -22,11 +25,16 @@ const App = () => {
     refetch();
   }
 
+  React.useEffect(() => {
+    console.log("Method changed to:", method);
+  }, [method]);
+
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: 400, margin: 'auto', marginTop: 5 }}>
-      <Box sx={{ display: 'flex', gap: 2, width: 400 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: 800, margin: 'auto', marginTop: 5 }}>
+      <Box sx={{ display: 'flex', gap: 2, flex: 1}}>
+        <MethodSelect sx={{flex: 2, maxWidth: 120}} value={method} onChange={setMethod} />
         <TextField
-          sx={{ flex: 10 }}
+          sx={{ flex: 8 }}
           id="outlined-basic"
           label="URL"
           variant="outlined"
@@ -34,7 +42,7 @@ const App = () => {
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setUrl(event.target.value);
           }} />
-        <Button sx={{ flex: 2 }} variant="contained" onClick={handleSendRequest}>SEND</Button>
+        <Button sx={{ flex: 2, maxWidth: 120 }} variant="contained" onClick={handleSendRequest}>SEND</Button>
       </Box>
       <Box sx={{ flex: 1, display: 'flex' }}>
         {isLoading && <div>Loading...</div>}
