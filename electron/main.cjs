@@ -1,9 +1,11 @@
 // electron/main.js
 const { app, BrowserWindow } = require('electron');
+const { registerIpcHandlers } = require("./ipc.cjs");
 const createWindow = require('./window.cjs');
 
 
 app.whenReady().then(() => {
+  registerIpcHandlers();
   createWindow();
 
   app.on('activate', function () {

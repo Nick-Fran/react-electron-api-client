@@ -3,6 +3,7 @@ import { Box, Button, TextField } from "@mui/material"
 import { MethodSelect } from "./components";
 import { HttpMethod } from "./types/http";
 import { useRequest } from "./hooks";
+import { SavedRequest } from "./models/SavedRequest";
 
 const App = () => {
   const [url, setUrl] = React.useState("");
@@ -27,15 +28,27 @@ const App = () => {
     execute();
   }
 
-  const handleSaveRequest = () => {
-    // Implement save request logic here
-    console.log("Request saved:", { method, url });
+  const handleSaveRequest = async () => {
+    try {
+      const request: SavedRequest = {
+        id: crypto.randomUUID(),
+        name: `Request to ${url}`,
+        method,
+        url,
+        headers: {},
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      }
+      await window.electron.saveRequest(request);
+    } catch (err) {
+      console.error('Failed to save ', err)
+    }
   }
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: 800, margin: 'auto', marginTop: 5 }}>
-      <Box sx={{ display: 'flex', gap: 2, flex: 1}}>
-        <MethodSelect sx={{flex: 2, maxWidth: 120}} value={method} onChange={setMethod} />
+      <Box sx={{ display: 'flex', gap: 2, flex: 1 }}>
+        <MethodSelect sx={{ flex: 2, maxWidth: 120 }} value={method} onChange={setMethod} />
         <TextField
           sx={{ flex: 6 }}
           id="outlined-basic"

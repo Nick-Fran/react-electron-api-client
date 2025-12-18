@@ -1,6 +1,7 @@
 // electron/preload.js
-const { contextBridge } = require('electron');
+const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('api', {
-  ping: () => console.log('pong'),
+contextBridge.exposeInMainWorld('electron', {
+  saveRequest: (data) => ipcRenderer.invoke('save-request', data),
+  loadRequests: () => ipcRenderer.invoke('load-requests'),
 });
