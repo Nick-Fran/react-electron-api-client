@@ -4,8 +4,12 @@ const { getRequestsPath } = require('./paths.cjs');
 
 function registerIpcHandlers() {
   ipcMain.handle("load-requests", async () => {
-    // read from file / db
-    return [];
+    const file = getRequestsPath();
+    console.log('Loading', file);
+    const data = fs.existsSync(file)
+      ? JSON.parse(fs.readFileSync(file, 'utf-8'))
+      : [];
+    return data;
   });
 
   ipcMain.handle('save-request', async (_, request) => {
