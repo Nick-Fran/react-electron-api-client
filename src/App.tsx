@@ -2,13 +2,15 @@ import React from "react";
 import { Box, Button, TextField } from "@mui/material"
 import { EditableLabel, MethodSelect } from "./components";
 import { HttpMethod } from "./types/http";
-import { useRequest } from "./hooks";
+import { useIsElectron, useRequest } from "./hooks";
 import { SavedRequest } from "./models/SavedRequest";
 
 const App = () => {
   const [url, setUrl] = React.useState("");
   const [name, setName] = React.useState("New Request");
   const [method, setMethod] = React.useState<HttpMethod>('GET');
+
+  const isElectron = useIsElectron();
 
   React.useEffect(() => {
     console.log("Method changed to:", method);
@@ -30,6 +32,10 @@ const App = () => {
   }
 
   const handleSaveRequest = async () => {
+    if (!isElectron) {
+      console.warn('Save request is only available in Electron environment');
+      return;
+    }
     try {
       const request: SavedRequest = {
         id: crypto.randomUUID(),
@@ -66,7 +72,7 @@ const App = () => {
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setUrl(event.target.value);
           }} />
-        <Button sx={{ flex: 2, maxWidth: 120 }} variant="outlined" onClick={handleSaveRequest}>Save</Button>
+        <Button sx={{ flex: 2, maxWidth: 120 }} variant="outlined" onClick={handleSaveRequest} disabled={!isElectron}>Save</Button>
         <Button sx={{ flex: 2, maxWidth: 120 }} variant="contained" onClick={handleSendRequest}>SEND</Button>
       </Box>
       <Box sx={{ flex: 1, display: 'flex' }}>
