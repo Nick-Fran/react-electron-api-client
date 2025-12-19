@@ -1,12 +1,13 @@
 import React from "react";
 import { Box, Button, TextField } from "@mui/material"
-import { MethodSelect } from "./components";
+import { EditableLabel, MethodSelect } from "./components";
 import { HttpMethod } from "./types/http";
 import { useRequest } from "./hooks";
 import { SavedRequest } from "./models/SavedRequest";
 
 const App = () => {
   const [url, setUrl] = React.useState("");
+  const [name, setName] = React.useState("New Request");
   const [method, setMethod] = React.useState<HttpMethod>('GET');
 
   React.useEffect(() => {
@@ -32,7 +33,7 @@ const App = () => {
     try {
       const request: SavedRequest = {
         id: crypto.randomUUID(),
-        name: `Request to ${url}`,
+        name,
         method,
         url,
         headers: {},
@@ -47,6 +48,13 @@ const App = () => {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: 800, margin: 'auto', marginTop: 5 }}>
+      <Box>
+        <EditableLabel
+          value={name}
+          onChange={setName}
+          sx={{ fontSize: 24, fontWeight: 'bold' }}
+        />
+      </Box>
       <Box sx={{ display: 'flex', gap: 2, flex: 1 }}>
         <MethodSelect sx={{ flex: 2, maxWidth: 120 }} value={method} onChange={setMethod} />
         <TextField
